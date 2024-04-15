@@ -1,6 +1,8 @@
 %{
     #include<stdio.h>
+    #include "tree.h"
     #include "syntax.tab.h"
+    
     #define YY_USER_ACTION \
         yylloc.first_line=yylineno;\
         yylloc.last_line=yylineno;

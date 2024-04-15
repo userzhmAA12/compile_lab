@@ -528,13 +528,15 @@ char *yytext;
 #line 1 "./lexical.l"
 #line 2 "./lexical.l"
     #include<stdio.h>
+    #include "tree.h"
     #include "syntax.tab.h"
+    
     #define YY_USER_ACTION \
         yylloc.first_line=yylineno;\
         yylloc.last_line=yylineno;
     int has_error = 0;
-#line 537 "./lex.yy.c"
-#line 538 "./lex.yy.c"
+#line 539 "./lex.yy.c"
+#line 540 "./lex.yy.c"
 
 #define INITIAL 0
 
@@ -751,9 +753,9 @@ YY_DECL
 		}
 
 	{
-#line 10 "./lexical.l"
+#line 12 "./lexical.l"
 
-#line 757 "./lex.yy.c"
+#line 759 "./lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -822,162 +824,162 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 11 "./lexical.l"
+#line 13 "./lexical.l"
 {yylval.type_node = creatNode("INT", yylineno, yytext); return INT;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 12 "./lexical.l"
+#line 14 "./lexical.l"
 {yylval.type_node = creatNode("INT", yylineno, yytext); return INT;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "./lexical.l"
+#line 15 "./lexical.l"
 {yylval.type_node = creatNode("INT", yylineno, yytext); return INT;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "./lexical.l"
+#line 16 "./lexical.l"
 {yylval.type_node = creatNode("FLOAT", yylineno, yytext); return FLOAT;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "./lexical.l"
+#line 17 "./lexical.l"
 {yylval.type_node = creatNode("FLOAT", yylineno, yytext); return FLOAT;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "./lexical.l"
+#line 18 "./lexical.l"
 {yylval.type_node = creatNode("TYPE", yylineno, yytext); return TYPE;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 17 "./lexical.l"
+#line 19 "./lexical.l"
 {yylval.type_node = creatNode("STRUCT", yylineno, yytext); return STRUCT;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 18 "./lexical.l"
+#line 20 "./lexical.l"
 {yylval.type_node = creatNode("RETURN", yylineno, yytext); return RETURN;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 19 "./lexical.l"
+#line 21 "./lexical.l"
 {yylval.type_node = creatNode("IF", yylineno, yytext); return IF;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 20 "./lexical.l"
+#line 22 "./lexical.l"
 {yylval.type_node = creatNode("ELSE", yylineno, yytext); return ELSE;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 21 "./lexical.l"
+#line 23 "./lexical.l"
 {yylval.type_node = creatNode("WHILE", yylineno, yytext); return WHILE;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 22 "./lexical.l"
+#line 24 "./lexical.l"
 {yylval.type_node = creatNode("ID", yylineno, yytext); return ID;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 23 "./lexical.l"
+#line 25 "./lexical.l"
 {yylval.type_node = creatNode("SEMI", yylineno, yytext); return SEMI;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 24 "./lexical.l"
+#line 26 "./lexical.l"
 {yylval.type_node = creatNode("COMMA", yylineno, yytext); return COMMA;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 25 "./lexical.l"
+#line 27 "./lexical.l"
 {yylval.type_node = creatNode("RELOP", yylineno, yytext); return RELOP;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 26 "./lexical.l"
+#line 28 "./lexical.l"
 {yylval.type_node = creatNode("ASSIGNOP", yylineno, yytext); return ASSIGNOP;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 27 "./lexical.l"
+#line 29 "./lexical.l"
 {yylval.type_node = creatNode("PLUS", yylineno, yytext); return PLUS;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 28 "./lexical.l"
+#line 30 "./lexical.l"
 {yylval.type_node = creatNode("MINUS", yylineno, yytext); return MINUS;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 29 "./lexical.l"
+#line 31 "./lexical.l"
 {yylval.type_node = creatNode("STAR", yylineno, yytext); return STAR;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 30 "./lexical.l"
+#line 32 "./lexical.l"
 {yylval.type_node = creatNode("DIV", yylineno, yytext); return DIV;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 31 "./lexical.l"
+#line 33 "./lexical.l"
 {yylval.type_node = creatNode("AND", yylineno, yytext); return AND;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 32 "./lexical.l"
+#line 34 "./lexical.l"
 {yylval.type_node = creatNode("OR", yylineno, yytext); return OR;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 33 "./lexical.l"
+#line 35 "./lexical.l"
 {yylval.type_node = creatNode("DOT", yylineno, yytext); return DOT;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 34 "./lexical.l"
+#line 36 "./lexical.l"
 {yylval.type_node = creatNode("NOT", yylineno, yytext); return NOT;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 35 "./lexical.l"
+#line 37 "./lexical.l"
 {yylval.type_node = creatNode("LP", yylineno, yytext); return LP;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 36 "./lexical.l"
+#line 38 "./lexical.l"
 {yylval.type_node = creatNode("RP", yylineno, yytext); return RP;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 37 "./lexical.l"
+#line 39 "./lexical.l"
 {yylval.type_node = creatNode("LB", yylineno, yytext); return LB;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 38 "./lexical.l"
+#line 40 "./lexical.l"
 {yylval.type_node = creatNode("RB", yylineno, yytext); return RB;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 39 "./lexical.l"
+#line 41 "./lexical.l"
 {yylval.type_node = creatNode("LC", yylineno, yytext); return LC;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 40 "./lexical.l"
+#line 42 "./lexical.l"
 {yylval.type_node = creatNode("RC", yylineno, yytext); return RC;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 41 "./lexical.l"
+#line 43 "./lexical.l"
 ;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 42 "./lexical.l"
+#line 44 "./lexical.l"
 {
     int c = input();
     while(1)
@@ -997,20 +999,20 @@ YY_RULE_SETUP
 case 33:
 /* rule 33 can match eol */
 YY_RULE_SETUP
-#line 57 "./lexical.l"
+#line 59 "./lexical.l"
 ;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 58 "./lexical.l"
+#line 60 "./lexical.l"
 {printf("Error type A at Line %d: Mysterious characters \'%s\'\n", yylineno, yytext); has_error = 1;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 59 "./lexical.l"
+#line 61 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 1014 "./lex.yy.c"
+#line 1016 "./lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2027,5 +2029,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 59 "./lexical.l"
+#line 61 "./lexical.l"
 

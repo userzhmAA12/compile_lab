@@ -70,13 +70,14 @@
 #line 1 "./syntax.y"
 
     #include<stdio.h>
-    #include "tree.h"
     #include "lex.yy.c"
+    #include "tree.h"
+    
     int yyerror(char* s);
     extern int has_error;
-    TreeNode* root;
+    extern TreeNode* ROOT;
 
-#line 80 "./syntax.tab.c"
+#line 81 "./syntax.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -548,15 +549,15 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    31,    31,    37,    42,    44,    50,    55,    61,    65,
-      69,    73,    78,    82,    89,    93,    98,   106,   111,   116,
-     120,   122,   127,   131,   138,   143,   150,   156,   161,   167,
-     172,   178,   185,   189,   194,   199,   201,   206,   210,   216,
-     224,   234,   242,   246,   250,   254,   258,   262,   266,   270,
-     275,   277,   283,   287,   291,   296,   300,   307,   311,   318,
-     324,   330,   336,   342,   348,   354,   360,   366,   372,   377,
-     382,   389,   395,   402,   408,   412,   416,   420,   424,   429,
-     435
+       0,    32,    32,    38,    43,    45,    51,    56,    62,    66,
+      70,    74,    79,    83,    90,    94,    99,   107,   112,   117,
+     121,   123,   128,   132,   139,   144,   151,   157,   162,   168,
+     173,   179,   186,   190,   195,   200,   202,   207,   211,   217,
+     225,   235,   243,   247,   251,   255,   259,   263,   267,   271,
+     276,   278,   284,   288,   292,   297,   301,   308,   312,   319,
+     325,   331,   337,   343,   349,   355,   361,   367,   373,   378,
+     383,   390,   396,   403,   409,   413,   417,   421,   425,   430,
+     436
 };
 #endif
 
@@ -1358,139 +1359,139 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* Program: ExtDefList  */
-#line 31 "./syntax.y"
+#line 32 "./syntax.y"
                      {
     (yyval.type_node) = creatNode("Program", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
-    root = (yyval.type_node);
+    ROOT = (yyval.type_node);
 }
-#line 1368 "./syntax.tab.c"
+#line 1369 "./syntax.tab.c"
     break;
 
   case 3: /* ExtDefList: ExtDef ExtDefList  */
-#line 37 "./syntax.y"
+#line 38 "./syntax.y"
                                {
     (yyval.type_node) = creatNode("ExtDefList", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1378 "./syntax.tab.c"
+#line 1379 "./syntax.tab.c"
     break;
 
   case 4: /* ExtDefList: %empty  */
-#line 42 "./syntax.y"
+#line 43 "./syntax.y"
                   {(yyval.type_node)=creatNode("NULL", -1, "");}
-#line 1384 "./syntax.tab.c"
+#line 1385 "./syntax.tab.c"
     break;
 
   case 5: /* ExtDef: Specifier ExtDecList SEMI  */
-#line 44 "./syntax.y"
+#line 45 "./syntax.y"
                                    {
     (yyval.type_node) = creatNode("ExtDef", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1395 "./syntax.tab.c"
+#line 1396 "./syntax.tab.c"
     break;
 
   case 6: /* ExtDef: Specifier SEMI  */
-#line 50 "./syntax.y"
+#line 51 "./syntax.y"
                      {
     (yyval.type_node) = creatNode("ExtDef", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1405 "./syntax.tab.c"
+#line 1406 "./syntax.tab.c"
     break;
 
   case 7: /* ExtDef: Specifier FunDec CompSt  */
-#line 55 "./syntax.y"
+#line 56 "./syntax.y"
                               {
     (yyval.type_node) = creatNode("ExtDef", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1416 "./syntax.tab.c"
+#line 1417 "./syntax.tab.c"
     break;
 
   case 8: /* ExtDef: Specifier ExtDecList  */
-#line 61 "./syntax.y"
+#line 62 "./syntax.y"
                            {
     printf("Error type B at Line %d: Syntax error 1 Missing \'%s\'\n", (yylsp[0]).last_line, ";");
     has_error = 1;
 }
-#line 1425 "./syntax.tab.c"
+#line 1426 "./syntax.tab.c"
     break;
 
   case 9: /* ExtDef: Specifier  */
-#line 65 "./syntax.y"
+#line 66 "./syntax.y"
                 {
     printf("Error type B at Line %d: Syntax error 2 Missing \'%s\'\n", (yylsp[0]).last_line, ";");
     has_error = 1;
 }
-#line 1434 "./syntax.tab.c"
+#line 1435 "./syntax.tab.c"
     break;
 
   case 10: /* ExtDef: error SEMI  */
-#line 69 "./syntax.y"
+#line 70 "./syntax.y"
                  {
     printf("Error type B at Line %d: Syntax error 3 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1443 "./syntax.tab.c"
+#line 1444 "./syntax.tab.c"
     break;
 
   case 11: /* ExtDef: Specifier error CompSt  */
-#line 73 "./syntax.y"
+#line 74 "./syntax.y"
                              {
     printf("Error type B at Line %d: Syntax error 4 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1452 "./syntax.tab.c"
+#line 1453 "./syntax.tab.c"
     break;
 
   case 12: /* ExtDecList: VarDec  */
-#line 78 "./syntax.y"
+#line 79 "./syntax.y"
                     {
     (yyval.type_node) = creatNode("ExtDecList", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1461 "./syntax.tab.c"
+#line 1462 "./syntax.tab.c"
     break;
 
   case 13: /* ExtDecList: VarDec COMMA ExtDecList  */
-#line 82 "./syntax.y"
+#line 83 "./syntax.y"
                               {
     (yyval.type_node) = creatNode("ExtDecList", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1472 "./syntax.tab.c"
+#line 1473 "./syntax.tab.c"
     break;
 
   case 14: /* Specifier: TYPE  */
-#line 89 "./syntax.y"
+#line 90 "./syntax.y"
                  {
     (yyval.type_node) = creatNode("Specifier", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1481 "./syntax.tab.c"
+#line 1482 "./syntax.tab.c"
     break;
 
   case 15: /* Specifier: StructSpecifier  */
-#line 93 "./syntax.y"
+#line 94 "./syntax.y"
                       {
     (yyval.type_node) = creatNode("Specifier", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1490 "./syntax.tab.c"
+#line 1491 "./syntax.tab.c"
     break;
 
   case 16: /* StructSpecifier: STRUCT OptTag LC DefList RC  */
-#line 98 "./syntax.y"
+#line 99 "./syntax.y"
                                               {
     (yyval.type_node) = creatNode("StructSpecifier", (yyvsp[-4].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-4].type_node);
@@ -1499,63 +1500,63 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1503 "./syntax.tab.c"
+#line 1504 "./syntax.tab.c"
     break;
 
   case 17: /* StructSpecifier: STRUCT Tag  */
-#line 106 "./syntax.y"
+#line 107 "./syntax.y"
                  {
     (yyval.type_node) = creatNode("StructSpecifier", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1513 "./syntax.tab.c"
+#line 1514 "./syntax.tab.c"
     break;
 
   case 18: /* StructSpecifier: STRUCT error RC  */
-#line 111 "./syntax.y"
+#line 112 "./syntax.y"
                       {
     printf("Error type B at Line %d: Syntax error 5 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1522 "./syntax.tab.c"
+#line 1523 "./syntax.tab.c"
     break;
 
   case 19: /* OptTag: ID  */
-#line 116 "./syntax.y"
+#line 117 "./syntax.y"
             {
     (yyval.type_node) = creatNode("OptTag", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1531 "./syntax.tab.c"
+#line 1532 "./syntax.tab.c"
     break;
 
   case 20: /* OptTag: %empty  */
-#line 120 "./syntax.y"
+#line 121 "./syntax.y"
                   {(yyval.type_node)=creatNode("NULL", -1, "");}
-#line 1537 "./syntax.tab.c"
+#line 1538 "./syntax.tab.c"
     break;
 
   case 21: /* Tag: ID  */
-#line 122 "./syntax.y"
+#line 123 "./syntax.y"
          {
     (yyval.type_node) = creatNode("Tag", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1546 "./syntax.tab.c"
+#line 1547 "./syntax.tab.c"
     break;
 
   case 22: /* VarDec: ID  */
-#line 127 "./syntax.y"
+#line 128 "./syntax.y"
             {
     (yyval.type_node) = creatNode("VarDec", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1555 "./syntax.tab.c"
+#line 1556 "./syntax.tab.c"
     break;
 
   case 23: /* VarDec: VarDec LB INT RB  */
-#line 131 "./syntax.y"
+#line 132 "./syntax.y"
                        {
     (yyval.type_node) = creatNode("VarDec", (yyvsp[-3].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-3].type_node);
@@ -1563,20 +1564,20 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1567 "./syntax.tab.c"
+#line 1568 "./syntax.tab.c"
     break;
 
   case 24: /* VarDec: VarDec LB error RB  */
-#line 138 "./syntax.y"
+#line 139 "./syntax.y"
                          {
     printf("Error type B at Line %d: Syntax error 6 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1576 "./syntax.tab.c"
+#line 1577 "./syntax.tab.c"
     break;
 
   case 25: /* FunDec: ID LP VarList RP  */
-#line 143 "./syntax.y"
+#line 144 "./syntax.y"
                           {
     (yyval.type_node) = creatNode("FunDec", (yyvsp[-3].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-3].type_node);
@@ -1584,61 +1585,61 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1588 "./syntax.tab.c"
+#line 1589 "./syntax.tab.c"
     break;
 
   case 26: /* FunDec: ID LP RP  */
-#line 150 "./syntax.y"
+#line 151 "./syntax.y"
                {
     (yyval.type_node) = creatNode("FunDec", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1599 "./syntax.tab.c"
+#line 1600 "./syntax.tab.c"
     break;
 
   case 27: /* FunDec: ID LP error RP  */
-#line 156 "./syntax.y"
+#line 157 "./syntax.y"
                      {
     printf("Error type B at Line %d: Syntax error 7 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1608 "./syntax.tab.c"
+#line 1609 "./syntax.tab.c"
     break;
 
   case 28: /* VarList: ParamDec COMMA VarList  */
-#line 161 "./syntax.y"
+#line 162 "./syntax.y"
                                  {
     (yyval.type_node) = creatNode("VarList", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1619 "./syntax.tab.c"
+#line 1620 "./syntax.tab.c"
     break;
 
   case 29: /* VarList: ParamDec  */
-#line 167 "./syntax.y"
+#line 168 "./syntax.y"
                {
     (yyval.type_node) = creatNode("VarList", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1628 "./syntax.tab.c"
+#line 1629 "./syntax.tab.c"
     break;
 
   case 30: /* ParamDec: Specifier VarDec  */
-#line 172 "./syntax.y"
+#line 173 "./syntax.y"
                             {
     (yyval.type_node) = creatNode("ParamDec", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1638 "./syntax.tab.c"
+#line 1639 "./syntax.tab.c"
     break;
 
   case 31: /* CompSt: LC DefList StmtList RC  */
-#line 178 "./syntax.y"
+#line 179 "./syntax.y"
                                 {
     (yyval.type_node) = creatNode("CompSt", (yyvsp[-3].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-3].type_node);
@@ -1646,75 +1647,75 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1650 "./syntax.tab.c"
+#line 1651 "./syntax.tab.c"
     break;
 
   case 32: /* CompSt: LC DecList StmtList  */
-#line 185 "./syntax.y"
+#line 186 "./syntax.y"
                           {
     printf("Error type B at Line %d: Syntax error 8 Missing \'%s\'\n", (yylsp[0]).last_line, "}");
     has_error = 1;
 }
-#line 1659 "./syntax.tab.c"
+#line 1660 "./syntax.tab.c"
     break;
 
   case 33: /* CompSt: error RC  */
-#line 189 "./syntax.y"
+#line 190 "./syntax.y"
                {
     printf("Error type B at Line %d: Syntax error 9 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1668 "./syntax.tab.c"
+#line 1669 "./syntax.tab.c"
     break;
 
   case 34: /* StmtList: Stmt StmtList  */
-#line 194 "./syntax.y"
+#line 195 "./syntax.y"
                          {
     (yyval.type_node) = creatNode("StmtList", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1678 "./syntax.tab.c"
+#line 1679 "./syntax.tab.c"
     break;
 
   case 35: /* StmtList: %empty  */
-#line 199 "./syntax.y"
+#line 200 "./syntax.y"
                   {(yyval.type_node)=creatNode("NULL", -1, "");}
-#line 1684 "./syntax.tab.c"
+#line 1685 "./syntax.tab.c"
     break;
 
   case 36: /* Stmt: Exp SEMI  */
-#line 201 "./syntax.y"
+#line 202 "./syntax.y"
                 {
     (yyval.type_node) = creatNode("Stmt", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1694 "./syntax.tab.c"
+#line 1695 "./syntax.tab.c"
     break;
 
   case 37: /* Stmt: CompSt  */
-#line 206 "./syntax.y"
+#line 207 "./syntax.y"
              {
     (yyval.type_node) = creatNode("Stmt", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1703 "./syntax.tab.c"
+#line 1704 "./syntax.tab.c"
     break;
 
   case 38: /* Stmt: RETURN Exp SEMI  */
-#line 210 "./syntax.y"
+#line 211 "./syntax.y"
                       {
     (yyval.type_node) = creatNode("Stmt", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node); 
 }
-#line 1714 "./syntax.tab.c"
+#line 1715 "./syntax.tab.c"
     break;
 
   case 39: /* Stmt: IF LP Exp RP Stmt  */
-#line 216 "./syntax.y"
+#line 217 "./syntax.y"
                                               {
     (yyval.type_node) = creatNode("Stmt", (yyvsp[-4].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-4].type_node);
@@ -1723,11 +1724,11 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1727 "./syntax.tab.c"
+#line 1728 "./syntax.tab.c"
     break;
 
   case 40: /* Stmt: IF LP Exp RP Stmt ELSE Stmt  */
-#line 224 "./syntax.y"
+#line 225 "./syntax.y"
                                   {
     (yyval.type_node) = creatNode("Stmt", (yyvsp[-6].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-6].type_node);
@@ -1738,11 +1739,11 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1742 "./syntax.tab.c"
+#line 1743 "./syntax.tab.c"
     break;
 
   case 41: /* Stmt: WHILE LP Exp RP Stmt  */
-#line 234 "./syntax.y"
+#line 235 "./syntax.y"
                            {
     (yyval.type_node) = creatNode("Stmt", (yyvsp[-4].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-4].type_node);
@@ -1751,286 +1752,286 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1755 "./syntax.tab.c"
+#line 1756 "./syntax.tab.c"
     break;
 
   case 42: /* Stmt: IF error ELSE  */
-#line 242 "./syntax.y"
+#line 243 "./syntax.y"
                     {
     printf("Error type B at Line %d: Syntax error 10 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1764 "./syntax.tab.c"
+#line 1765 "./syntax.tab.c"
     break;
 
   case 43: /* Stmt: WHILE error ELSE Stmt  */
-#line 246 "./syntax.y"
+#line 247 "./syntax.y"
                             {
     printf("Error type B at Line %d: Syntax error 11 found.\n", (yylsp[-2]).last_line);
     has_error = 1;
 }
-#line 1773 "./syntax.tab.c"
+#line 1774 "./syntax.tab.c"
     break;
 
   case 44: /* Stmt: WHILE error RP  */
-#line 250 "./syntax.y"
+#line 251 "./syntax.y"
                      {
     printf("Error type B at Line %d: Syntax error 12 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1782 "./syntax.tab.c"
+#line 1783 "./syntax.tab.c"
     break;
 
   case 45: /* Stmt: error SEMI  */
-#line 254 "./syntax.y"
+#line 255 "./syntax.y"
                  {
     printf("Error type B at Line %d: Syntax error 13 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1791 "./syntax.tab.c"
+#line 1792 "./syntax.tab.c"
     break;
 
   case 46: /* Stmt: Exp  */
-#line 258 "./syntax.y"
+#line 259 "./syntax.y"
           {
     printf("Error type B at Line %d: Syntax error 14 Missing \'%s\'\n", (yylsp[0]).last_line, ";");
     has_error = 1;
 }
-#line 1800 "./syntax.tab.c"
+#line 1801 "./syntax.tab.c"
     break;
 
   case 47: /* Stmt: RETURN Exp  */
-#line 262 "./syntax.y"
+#line 263 "./syntax.y"
                  {
     printf("Error type B at Line %d: Syntax error 15 Missing \'%s\'\n", (yylsp[0]).last_line, ";");
     has_error = 1;
 }
-#line 1809 "./syntax.tab.c"
+#line 1810 "./syntax.tab.c"
     break;
 
   case 48: /* Stmt: STAR DIV  */
-#line 266 "./syntax.y"
+#line 267 "./syntax.y"
                {
     printf("Error type B at Line %d: Syntax error 20 found.\n", (yylsp[-1]).last_line);
 }
-#line 1817 "./syntax.tab.c"
+#line 1818 "./syntax.tab.c"
     break;
 
   case 49: /* DefList: Def DefList  */
-#line 270 "./syntax.y"
+#line 271 "./syntax.y"
                       {
     (yyval.type_node) = creatNode("DefList", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1827 "./syntax.tab.c"
+#line 1828 "./syntax.tab.c"
     break;
 
   case 50: /* DefList: %empty  */
-#line 275 "./syntax.y"
+#line 276 "./syntax.y"
                   {(yyval.type_node)=creatNode("NULL", -1, "");}
-#line 1833 "./syntax.tab.c"
+#line 1834 "./syntax.tab.c"
     break;
 
   case 51: /* Def: Specifier DecList SEMI  */
-#line 277 "./syntax.y"
+#line 278 "./syntax.y"
                              {
     (yyval.type_node) = creatNode("Def", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1844 "./syntax.tab.c"
+#line 1845 "./syntax.tab.c"
     break;
 
   case 52: /* Def: Specifier error SEMI  */
-#line 283 "./syntax.y"
+#line 284 "./syntax.y"
                            {
     printf("Error type B at Line %d: Syntax error 16 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1853 "./syntax.tab.c"
+#line 1854 "./syntax.tab.c"
     break;
 
   case 53: /* Def: Specifier DecList  */
-#line 287 "./syntax.y"
+#line 288 "./syntax.y"
                         {
     printf("Error type B at Line %d: Syntax error 17 Missing \'%s\'\n", (yylsp[0]).last_line, ";");
     has_error = 1;
 }
-#line 1862 "./syntax.tab.c"
+#line 1863 "./syntax.tab.c"
     break;
 
   case 54: /* Def: STAR DIV  */
-#line 291 "./syntax.y"
+#line 292 "./syntax.y"
                {
     printf("Error type B at Line %d: Syntax error 21 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 1871 "./syntax.tab.c"
+#line 1872 "./syntax.tab.c"
     break;
 
   case 55: /* DecList: Dec  */
-#line 296 "./syntax.y"
+#line 297 "./syntax.y"
               {
     (yyval.type_node) = creatNode("DecList", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1880 "./syntax.tab.c"
+#line 1881 "./syntax.tab.c"
     break;
 
   case 56: /* DecList: Dec COMMA DecList  */
-#line 300 "./syntax.y"
+#line 301 "./syntax.y"
                         {
     (yyval.type_node) = creatNode("DecList", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1891 "./syntax.tab.c"
+#line 1892 "./syntax.tab.c"
     break;
 
   case 57: /* Dec: VarDec  */
-#line 307 "./syntax.y"
+#line 308 "./syntax.y"
              {
     (yyval.type_node) = creatNode("Dec", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 1900 "./syntax.tab.c"
+#line 1901 "./syntax.tab.c"
     break;
 
   case 58: /* Dec: VarDec ASSIGNOP Exp  */
-#line 311 "./syntax.y"
+#line 312 "./syntax.y"
                           {
     (yyval.type_node) = creatNode("Dec", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1911 "./syntax.tab.c"
+#line 1912 "./syntax.tab.c"
     break;
 
   case 59: /* Exp: Exp ASSIGNOP Exp  */
-#line 318 "./syntax.y"
+#line 319 "./syntax.y"
                        {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1922 "./syntax.tab.c"
+#line 1923 "./syntax.tab.c"
     break;
 
   case 60: /* Exp: Exp AND Exp  */
-#line 324 "./syntax.y"
+#line 325 "./syntax.y"
                   {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1933 "./syntax.tab.c"
+#line 1934 "./syntax.tab.c"
     break;
 
   case 61: /* Exp: Exp OR Exp  */
-#line 330 "./syntax.y"
+#line 331 "./syntax.y"
                  {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1944 "./syntax.tab.c"
+#line 1945 "./syntax.tab.c"
     break;
 
   case 62: /* Exp: Exp RELOP Exp  */
-#line 336 "./syntax.y"
+#line 337 "./syntax.y"
                     {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1955 "./syntax.tab.c"
+#line 1956 "./syntax.tab.c"
     break;
 
   case 63: /* Exp: Exp PLUS Exp  */
-#line 342 "./syntax.y"
+#line 343 "./syntax.y"
                    {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1966 "./syntax.tab.c"
+#line 1967 "./syntax.tab.c"
     break;
 
   case 64: /* Exp: Exp MINUS Exp  */
-#line 348 "./syntax.y"
+#line 349 "./syntax.y"
                     {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1977 "./syntax.tab.c"
+#line 1978 "./syntax.tab.c"
     break;
 
   case 65: /* Exp: Exp STAR Exp  */
-#line 354 "./syntax.y"
+#line 355 "./syntax.y"
                    {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1988 "./syntax.tab.c"
+#line 1989 "./syntax.tab.c"
     break;
 
   case 66: /* Exp: Exp DIV Exp  */
-#line 360 "./syntax.y"
+#line 361 "./syntax.y"
                   {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 1999 "./syntax.tab.c"
+#line 2000 "./syntax.tab.c"
     break;
 
   case 67: /* Exp: LP Exp RP  */
-#line 366 "./syntax.y"
+#line 367 "./syntax.y"
                 {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2010 "./syntax.tab.c"
+#line 2011 "./syntax.tab.c"
     break;
 
   case 68: /* Exp: MINUS Exp  */
-#line 372 "./syntax.y"
+#line 373 "./syntax.y"
                 {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2020 "./syntax.tab.c"
+#line 2021 "./syntax.tab.c"
     break;
 
   case 69: /* Exp: NOT Exp  */
-#line 377 "./syntax.y"
+#line 378 "./syntax.y"
               {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-1].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2030 "./syntax.tab.c"
+#line 2031 "./syntax.tab.c"
     break;
 
   case 70: /* Exp: ID LP Args RP  */
-#line 382 "./syntax.y"
+#line 383 "./syntax.y"
                     {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-3].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-3].type_node);
@@ -2038,22 +2039,22 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2042 "./syntax.tab.c"
+#line 2043 "./syntax.tab.c"
     break;
 
   case 71: /* Exp: ID LP RP  */
-#line 389 "./syntax.y"
+#line 390 "./syntax.y"
                {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2053 "./syntax.tab.c"
+#line 2054 "./syntax.tab.c"
     break;
 
   case 72: /* Exp: Exp LB Exp RB  */
-#line 395 "./syntax.y"
+#line 396 "./syntax.y"
                     {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-3].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-3].type_node);
@@ -2061,87 +2062,87 @@ yyreduce:
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2065 "./syntax.tab.c"
+#line 2066 "./syntax.tab.c"
     break;
 
   case 73: /* Exp: Exp DOT ID  */
-#line 402 "./syntax.y"
+#line 403 "./syntax.y"
                  {
     (yyval.type_node) = creatNode("Exp", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2076 "./syntax.tab.c"
+#line 2077 "./syntax.tab.c"
     break;
 
   case 74: /* Exp: ID  */
-#line 408 "./syntax.y"
+#line 409 "./syntax.y"
          {
     (yyval.type_node) = creatNode("Exp", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 2085 "./syntax.tab.c"
+#line 2086 "./syntax.tab.c"
     break;
 
   case 75: /* Exp: INT  */
-#line 412 "./syntax.y"
+#line 413 "./syntax.y"
           {
     (yyval.type_node) = creatNode("Exp", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 2094 "./syntax.tab.c"
+#line 2095 "./syntax.tab.c"
     break;
 
   case 76: /* Exp: FLOAT  */
-#line 416 "./syntax.y"
+#line 417 "./syntax.y"
             {
     (yyval.type_node) = creatNode("Exp", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 2103 "./syntax.tab.c"
+#line 2104 "./syntax.tab.c"
     break;
 
   case 77: /* Exp: error RP  */
-#line 420 "./syntax.y"
+#line 421 "./syntax.y"
                {
     printf("Error type B at Line %d: Syntax error 18 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 2112 "./syntax.tab.c"
+#line 2113 "./syntax.tab.c"
     break;
 
   case 78: /* Exp: Exp LB error RB  */
-#line 424 "./syntax.y"
+#line 425 "./syntax.y"
                       {
     printf("Error type B at Line %d: Syntax error 19 found.\n", (yylsp[-1]).last_line);
     has_error = 1;
 }
-#line 2121 "./syntax.tab.c"
+#line 2122 "./syntax.tab.c"
     break;
 
   case 79: /* Args: Exp COMMA Args  */
-#line 429 "./syntax.y"
+#line 430 "./syntax.y"
                       {
     (yyval.type_node) = creatNode("Args", (yyvsp[-2].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[-2].type_node);
     (yyvsp[-2].type_node)->next_brother = (yyvsp[-1].type_node);
     (yyvsp[-1].type_node)->next_brother = (yyvsp[0].type_node);
 }
-#line 2132 "./syntax.tab.c"
+#line 2133 "./syntax.tab.c"
     break;
 
   case 80: /* Args: Exp  */
-#line 435 "./syntax.y"
+#line 436 "./syntax.y"
           {
     (yyval.type_node) = creatNode("Args", (yyvsp[0].type_node)->lineno, "");
     (yyval.type_node)->first_child = (yyvsp[0].type_node);
 }
-#line 2141 "./syntax.tab.c"
+#line 2142 "./syntax.tab.c"
     break;
 
 
-#line 2145 "./syntax.tab.c"
+#line 2146 "./syntax.tab.c"
 
       default: break;
     }
@@ -2339,10 +2340,10 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 440 "./syntax.y"
+#line 441 "./syntax.y"
 
 int main(int argc, char** argv) 
- { 
+{ 
     if (argc <= 1) return 1; 
     FILE* f = fopen(argv[1], "r"); 
     if (!f) 
@@ -2352,8 +2353,7 @@ int main(int argc, char** argv)
     } 
     yyrestart(f); 
     yyparse(); 
-    if(has_error == 0)printTree(root, 0);
-    // printTree(root, 0);
+    if(has_error == 0)printTree(ROOT, 0);
     return 0; 
 }
 int yyerror(char* s){

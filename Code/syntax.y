@@ -1,10 +1,11 @@
 %{
     #include<stdio.h>
-    #include "tree.h"
     #include "lex.yy.c"
+    #include "tree.h"
+    
     int yyerror(char* s);
     extern int has_error;
-    TreeNode* root;
+    extern TreeNode* ROOT;
 %}
 %union {
     TreeNode* type_node;
@@ -31,7 +32,7 @@
 Program : ExtDefList {
     $$ = creatNode("Program", $1->lineno, "");
     $$->first_child = $1;
-    root = $$;
+    ROOT = $$;
 }
     ;
 ExtDefList : ExtDef ExtDefList {
@@ -439,7 +440,7 @@ Args : Exp COMMA Args {
     ;
 %%
 int main(int argc, char** argv) 
- { 
+{ 
     if (argc <= 1) return 1; 
     FILE* f = fopen(argv[1], "r"); 
     if (!f) 
@@ -449,8 +450,7 @@ int main(int argc, char** argv)
     } 
     yyrestart(f); 
     yyparse(); 
-    if(has_error == 0)printTree(root, 0);
-    // printTree(root, 0);
+    if(has_error == 0)printTree(ROOT, 0);
     return 0; 
 }
 int yyerror(char* s){

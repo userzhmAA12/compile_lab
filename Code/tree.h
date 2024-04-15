@@ -1,3 +1,5 @@
+#ifndef _TREE_H_
+#define _TREE_H_
 typedef struct TreeNode{
     char type[32];
     int lineno;
@@ -7,3 +9,7 @@ typedef struct TreeNode{
 }TreeNode;
 TreeNode* creatNode(char* a, int b, char* c);
 void printTree(TreeNode* root, int depth);
+
+TreeNode* ROOT;
+
+#endif
