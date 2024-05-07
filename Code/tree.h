@@ -6,10 +6,10 @@ typedef struct TreeNode{
     char val[32];
     struct TreeNode* first_child;
     struct TreeNode* next_brother;
+    int is_left;
 }TreeNode;
 TreeNode* creatNode(char* a, int b, char* c);
 void printTree(TreeNode* root, int depth);
 
-TreeNode* ROOT;
 
 #endif

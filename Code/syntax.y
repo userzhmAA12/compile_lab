@@ -2,10 +2,17 @@
     #include<stdio.h>
     #include "lex.yy.c"
     #include "tree.h"
+    #include "semantics.h"
+    #include "intercode.h"
     
     int yyerror(char* s);
     extern int has_error;
-    extern TreeNode* ROOT;
+    TreeNode* ROOT;
+    extern HashNode SymbolTable[TABLESIZE];
+    extern Stack Top;
+    extern FuncNode func_head;
+    extern int error_num;
+    extern int dep_now;
 %}
 %union {
     TreeNode* type_node;
@@ -54,6 +61,12 @@ ExtDef : Specifier ExtDecList SEMI {
     $1->next_brother = $2;
 }
     | Specifier FunDec CompSt {
+    $$ = creatNode("ExtDef", $1->lineno, "");
+    $$->first_child = $1;
+    $1->next_brother = $2;
+    $2->next_brother = $3;
+}
+    | Specifier FunDec SEMI{
     $$ = creatNode("ExtDef", $1->lineno, "");
     $$->first_child = $1;
     $1->next_brother = $2;
@@ -183,7 +196,7 @@ CompSt : LC DefList StmtList RC {
     $2->next_brother = $3;
     $3->next_brother = $4;
 }
-    | LC DecList StmtList {
+    | LC DefList StmtList {
     printf("Error type B at Line %d: Syntax error 8 Missing \'%s\'\n", @3.last_line, "}");
     has_error = 1;
 }
@@ -450,7 +463,14 @@ int main(int argc, char** argv)
     } 
     yyrestart(f); 
     yyparse(); 
-    if(has_error == 0)printTree(ROOT, 0);
+    // if(has_error == 0)printTree(ROOT, 0);
+    Program(ROOT);
+    while(func_head!=NULL)
+    {
+        error_num++;
+        printf("Error type 18 at Line %d: Undefined function \"%s\".\n", func_head->lineno, func_head->func->name);
+        func_head = func_head->next;
+    }
     return 0; 
 }
 int yyerror(char* s){

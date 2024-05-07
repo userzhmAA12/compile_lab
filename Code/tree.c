@@ -32,6 +32,7 @@ TreeNode* creatNode(char* a, int b, char* c)
         // printf("%s: %s\n", newNode->type, newNode->val);
         newNode->first_child = NULL;
         newNode->next_brother = NULL;
+        newNode->is_left = 0;
     }
     return newNode;
 }
