@@ -4,10 +4,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <stdio.h>
 
 InterCode IR_head;
 InterCode IR_tail;
 int temp_num;
+int lable_num;
 void IR_append(InterCode code)
 {
     if(IR_head==NULL)
@@ -25,7 +27,7 @@ void IR_append(InterCode code)
         IR_tail = code;
     }
 }
-void new_temp()
+Operand new_temp()
 {
     temp_num++;
     Operand ret = (Operand)malloc(sizeof(struct Operand_));
@@ -41,83 +43,204 @@ void new_temp()
     }
     str[i] = '\0';
     i = i - 1;
-    int j = 1;
-    ret->u.name[0] = 't';
-    while(i>=0)
+    int j = 0;
+    strcpy(ret->u.name, "tfh");
+    while(j<i)
     {
-        ret->u.name[j] = str[i];
+        char c = str[j];
+        str[j] = str[i];
+        str[i] = c;
         j++;
         i--;
     }
-    ret->u.name[j] = '\0';
+    strcat(ret->u.name, str);
+    return ret;
 }
-void translate_Program(TreeNode* root)
+Operand new_lable()
 {
-    translate_ExtDefList(root->first_child);
-}
-void translate_ExtDefList(TreeNode* root)
-{
-    if(strcmp(root->type, "NULL")==0)return ;
-    TreeNode* first = root->first_child;
-    TreeNode* second = first->next_brother;
-    translate_ExtDef(first);
-    translate_ExtDefList(second);
-}
-void translate_ExtDef(TreeNode* root)
-{
-    TreeNode *first = root->first_child;
-    TreeNode *second = first->next_brother;
-    if(strcmp(second->type, "FunDec")==0)
+    lable_num++;
+    Operand ret = (Operand)malloc(sizeof(struct Operand_));
+    ret->kind = LABEL;
+    int tmp = lable_num;
+    int i = 0;
+    char str[32];
+    while(tmp>0)
     {
-        TreeNode *third = second->next_brother;
-        if(strcmp(third->type, "Compst")==0) //函数定义
+        str[i] = tmp%10 + '0';
+        tmp = tmp/10;
+        i++;
+    }
+    str[i] = '\0';
+    i = i - 1;
+    int j = 0;
+    strcpy(ret->u.name, "lable");
+    while(j<i)
+    {
+        char c = str[j];
+        str[j] = str[i];
+        str[i] = c;
+        j++;
+        i--;
+    }
+    strcat(ret->u.name, str);
+    return ret;
+}
+void printOperand(Operand op)
+{
+    if(op->kind==CONSTANT)
+    {
+        printf("#%d", op->u.value);
+    }
+    else if(op->kind==ADDR)
+    {
+        printf("&%s", op->u.name);
+    }
+    else if(op->kind==MYSTAR)
+    {
+        printf("*%s", op->u.name);
+    }
+    else
+        printf("%s", op->u.name);
+}
+void printIR(InterCode head)
+{
+    while(head!=NULL)
+    {
+        if(head->kind==IR_LABEL)
         {
-            translate_FunDec(second);
-            translate_Compst(third);
+            printf("LABLE ");
+            printOperand(head->u.singleOp.op);
+            printf(" :\n");
+        }
+        else if(head->kind==IR_FUNCTION)
+        {
+            printf("FUNCTION ");
+            printOperand(head->u.singleOp.op);
+            printf(" :\n");
+        }
+        else if(head->kind==IR_ASSIGN)
+        {
+            printOperand(head->u.assign.left);
+            printf(" := ");
+            printOperand(head->u.assign.right);
+            printf("\n");
+        }
+        else if(head->kind==IR_ADD)
+        {
+            printOperand(head->u.binOp.result);
+            printf(" := ");
+            printOperand(head->u.binOp.op1);
+            printf(" + ");
+            printOperand(head->u.binOp.op2);
+            printf("\n");
+        }
+        else if(head->kind==IR_SUB)
+        {
+            printOperand(head->u.binOp.result);
+            printf(" := ");
+            printOperand(head->u.binOp.op1);
+            printf(" - ");
+            printOperand(head->u.binOp.op2);
+            printf("\n");
+        }
+        else if(head->kind==IR_MUL)
+        {
+            printOperand(head->u.binOp.result);
+            printf(" := ");
+            printOperand(head->u.binOp.op1);
+            printf(" * ");
+            printOperand(head->u.binOp.op2);
+            printf("\n");
+        }
+        else if(head->kind==IR_DIV)
+        {
+            printOperand(head->u.binOp.result);
+            printf(" := ");
+            printOperand(head->u.binOp.op1);
+            printf(" / ");
+            printOperand(head->u.binOp.op2);
+            printf("\n");
+        }
+        else if(head->kind==IR_GET_ADDR)
+        {
+            printOperand(head->u.assign.left);
+            printf(" := &");
+            printOperand(head->u.assign.right);
+            printf("\n");
+        }
+        else if(head->kind==IR_READ_ADDR)
+        {
+            printOperand(head->u.assign.left);
+            printf(" := *");
+            printOperand(head->u.assign.right);
+            printf("\n");
+        }
+        else if(head->kind==IR_WRITE_ADDR)
+        {
+            printf("*");
+            printOperand(head->u.assign.left);
+            printf(" := ");
+            printOperand(head->u.assign.right);
+            printf("\n");
+        }
+        else if(head->kind==IR_GOTO)
+        {
+            printf("GOTO ");
+            printOperand(head->u.singleOp.op);
+            printf("\n");
+        }
+        else if(head->kind==IR_IF_GOTO)
+        {
+            printf("IF ");
+            printOperand(head->u.ifgoto.x);
+            printf(" %s ", head->u.ifgoto.relop);
+            printOperand(head->u.ifgoto.y);
+            printf(" GOTO ");
+            printOperand(head->u.ifgoto.label);
+            printf("\n");
+        }
+        else if(head->kind==IR_RETURN)
+        {
+            printf("RETURN ");
+            printOperand(head->u.singleOp.op);
+            printf("\n");
+        }
+        else if(head->kind==IR_DEC)
+        {
+            printf("DEC ");
+            printOperand(head->u.dec.op);
+            printf(" [%d]\n", head->u.dec.size);
+        }
+        else if(head->kind==IR_ARG)
+        {
+            printf("ARG ");
+            printOperand(head->u.singleOp.op);
+            printf("\n");
+        }
+        else if(head->kind==IR_CALL)
+        {
+            printOperand(head->u.assign.left);
+            printf(" := CALL ");
+            printOperand(head->u.assign.right);
+            printf("\n");
+        }
+        else if(head->kind==IR_PARAM)
+        {
+            printf("PARAM ");
+            printOperand(head->u.singleOp.op);
+            printf("\n");
+        }
+        else if(head->kind==IR_READ)
+        {
+            printf("READ ");
+            printOperand(head->u.singleOp.op);
+            printf("\n");
+        }
+        else if(head->kind==IR_WRITE)
+        {
+            printf("WRITE ");
+            printOperand(head->u.singleOp.op);
+            printf("\n");
         }
     }
-}
-void translate_FunDec(TreeNode* root)
-{
-    TreeNode* id = root->first_child;
-    TreeNode* lp = id->next_brother;
-    TreeNode* varlist = lp->next_brother;
-    InterCode code1 = (InterCode)malloc(sizeof(struct InterCode_));
-    Operand tmp_op = (Operand)malloc(sizeof(struct Operand_));
-    tmp_op->kind = FUNCTION;
-    strcpy(tmp_op->u.name, id->val);
-    code1->u.singleOp.op = tmp_op;
-    code1->kind = IR_FUNCTION;
-    IR_append(code1);
-    if(strcmp(varlist->type, "VarList")==0)
-    {
-        translate_VarList(varlist);
-    }
-}
-void translate_VarList(TreeNode* root)
-{
-    TreeNode* paramdec = root->first_child;
-    TreeNode* second = paramdec->next_brother;
-    translate_ParamDec(paramdec);
-    if(second!=NULL)
-    {
-        translate_VarList(second->next_brother);
-    }
-}
-void translate_ParamDec(TreeNode* root) //函数形参的具体处理
-{
-    TreeNode* specifier = root->first_child;
-    TreeNode* vardec = specifier->next_brother;
-    TreeNode* id = vardec->first_child; //函数形参的vardec一定解析成id
-    InterCode code1 = (InterCode)malloc(sizeof(struct InterCode_));
-    Operand tmp_op = (Operand)malloc(sizeof(struct Operand_));
-    tmp_op->kind = VAR;
-    strcpy(tmp_op->u.name, id->val);
-    code1->kind = IR_PARAM;
-    code1->u.singleOp.op = tmp_op;
-    IR_append(code1);
-}
-void translate_Compst(TreeNode* root)
-{
-
 }

@@ -1,6 +1,7 @@
 #ifndef _SEMANTICS_H
 #define _SEMANTICS_H
 #include"tree.h"
+#include "intercode.h"
 #include<string.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -81,6 +82,7 @@ void stack_push(Stack tmp);
 void stack_pop();
 bool type_cmp(Type t1, Type t2);
 bool field_cmp(FieldList f1, FieldList f2);
+int calculate_size(Type t);
 
 void Program(TreeNode *root);
 void ExtDefList(TreeNode *root);
@@ -107,9 +109,20 @@ Type Exp(TreeNode* root);
 Type Exp_Assign(TreeNode* root);
 Type Exp_And(TreeNode* root);
 Type Exp_Math(TreeNode* root);
+Type Exp_Relop(TreeNode* root);
 Type Exp_ID(TreeNode* root);
 Type Exp_Func(TreeNode* root);
 int Args(TreeNode* root, FieldList func);
 Type Exp_Array(TreeNode* root);
 Type Exp_Dot(TreeNode* root);
+// IR
+void translate_Exp(TreeNode* root, Operand place);
+void translate_Exp_Assign(TreeNode* root, Operand place);
+void translate_Exp_Math(TreeNode* root, Operand place);
+void translate_Exp_Logic(TreeNode* root, Operand place);
+void translate_Cond(TreeNode* root, Operand lable_true, Operand lable_false);
+void translate_Exp_Func(TreeNode* root, Operand place);
+ArgList translate_Args(TreeNode* root);
+void translate_Exp_Struct(TreeNode* root, Operand place);
+void translate_Exp_Array(TreeNode* root, Operand place);
 #endif

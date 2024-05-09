@@ -13,6 +13,8 @@
     extern FuncNode func_head;
     extern int error_num;
     extern int dep_now;
+    extern InterCode IR_head;
+    extern InterCode IR_tail;
 %}
 %union {
     TreeNode* type_node;
@@ -464,12 +466,17 @@ int main(int argc, char** argv)
     yyrestart(f); 
     yyparse(); 
     // if(has_error == 0)printTree(ROOT, 0);
+    
     Program(ROOT);
     while(func_head!=NULL)
     {
         error_num++;
         printf("Error type 18 at Line %d: Undefined function \"%s\".\n", func_head->lineno, func_head->func->name);
         func_head = func_head->next;
+    }
+    if(error_num==0)
+    {
+        printIR(IR_head);
     }
     return 0; 
 }

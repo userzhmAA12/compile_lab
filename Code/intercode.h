@@ -5,11 +5,10 @@ typedef struct Operand_* Operand;
 typedef struct InterCode_* InterCode;
 typedef struct ArgList_* ArgList;
 struct Operand_{
-    enum{VAR, CONSTANT, LABEL, FUNCTION, ADDR, STAR, NONE}kind;
+    enum{VAR, CONSTANT, LABEL, FUNC, ADDR, MYSTAR, NONE}kind;
     union{
 		int value;
 		char name[32];
-		Operand addr;
 	}u;
 };
 struct InterCode_
@@ -49,5 +48,10 @@ struct ArgList_{
     Operand arg;
     ArgList next;
 };
+void IR_append(InterCode code);
+Operand new_temp();
+Operand new_lable();
+void printOperand(Operand op);
+void printIR(InterCode head);
 
 #endif
