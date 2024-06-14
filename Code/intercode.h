@@ -1,6 +1,6 @@
 #ifndef _INTERCODE_H
 #define _INTERCODE_H
-
+#include<stdio.h>
 typedef struct Operand_* Operand; 
 typedef struct InterCode_* InterCode;
 typedef struct ArgList_* ArgList;
@@ -51,7 +51,8 @@ struct ArgList_{
 void IR_append(InterCode code);
 Operand new_temp();
 Operand new_lable();
-void printOperand(Operand op);
-void printIR(InterCode head);
+void printOperand(Operand op, FILE* file);
+void printIR(InterCode head, FILE* file);
+void print_test(InterCode head, FILE* file);
 
 #endif

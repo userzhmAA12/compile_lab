@@ -180,13 +180,15 @@ void init_table()
     strcpy(func_read->name, "read");
     FieldList func = (FieldList)malloc(sizeof(struct FieldList_));
     strcpy(func->name, "read");
+    Type temp_type1 = (Type)malloc(sizeof(struct Type_));
     Type ret_type = (Type)malloc(sizeof(struct Type_));
     ret_type->kind = BASIC;
     ret_type->u.basic = BASIC_INT;
     func->type = ret_type;
     func->tail = NULL;
-    func_read->val->kind = FUNCTION;
-    func_read->val->u.function = func;
+    temp_type1->kind = FUNCTION;
+    temp_type1->u.function = func;
+    func_read->val = temp_type1;
     func_read->depth = dep_now;
     func_read->flag = true;
     insertnode(func_read);
@@ -195,6 +197,7 @@ void init_table()
     strcpy(func_write->name, "write");
     FieldList func2 = (FieldList)malloc(sizeof(struct FieldList_));
     strcpy(func2->name, "write");
+    Type temp_type2 = (Type)malloc(sizeof(struct Type_));
     Type ret_type2 = (Type)malloc(sizeof(struct Type_));
     ret_type2->kind = BASIC;
     ret_type2->u.basic = BASIC_INT;
@@ -207,8 +210,9 @@ void init_table()
     param->type = param_type;
     param->tail = NULL;
     func2->tail = param;
-    func_write->val->kind = FUNCTION;
-    func_write->val->u.function = func2;
+    temp_type2->kind = FUNCTION;
+    temp_type2->u.function = func2;
+    func_write->val = temp_type2;
     func_write->depth = dep_now;
     func_write->flag = true;
     insertnode(func_write);
@@ -217,7 +221,7 @@ void init_table()
 // high-level definitions
 void Program(TreeNode *root)
 {
-    printf("Program\n");
+    // printf("Program\n");
     dep_now = 0;
     error_num = 0;
     Top = NULL;
@@ -227,7 +231,7 @@ void Program(TreeNode *root)
 }
 void ExtDefList(TreeNode *root)
 {
-    printf("ExtDefList\n");
+    // printf("ExtDefList\n");
     if(strcmp(root->type, "NULL")==0)return ;
     TreeNode* first = root->first_child;
     TreeNode* second = first->next_brother;
@@ -236,7 +240,7 @@ void ExtDefList(TreeNode *root)
 }
 void ExtDef(TreeNode *root)
 {
-    printf("ExtDef\n");
+    // printf("ExtDef\n");
     TreeNode *first = root->first_child;
     TreeNode *second = first->next_brother;
     Type type = Specifier(first);
@@ -279,9 +283,6 @@ void ExtDef(TreeNode *root)
         else //函数定义
         {
             HashNode tmp = FunDec(second, type);
-            Compst(third, type);
-            stack_pop();
-            dep_now--;
             HashNode find_node = check(tmp->name);
             if(find_node==NULL) //之前没有过声明或定义
             {
@@ -310,11 +311,15 @@ void ExtDef(TreeNode *root)
                     }
                 }
             }
+            Compst(third, type);
+            stack_pop();
+            dep_now--;
         }
     }
 }
 void ExtDecList(TreeNode *root, Type type)
 {
+    // printf("ExtDecList\n");
     TreeNode *first = root->first_child;
     HashNode tmp = VarDec(first, type);
     HashNode find_node = check(tmp->name);
@@ -338,6 +343,7 @@ void ExtDecList(TreeNode *root, Type type)
 // Specifiers
 Type Specifier(TreeNode *root)
 {
+    // printf("Specifier\n");
     TreeNode *first = root->first_child;
     if(strcmp(first->type, "TYPE")==0)
     {
@@ -357,6 +363,7 @@ Type Specifier(TreeNode *root)
 }
 Type StructSpecifier(TreeNode *root)
 {
+    // printf("StructSpecifier\n");
     TreeNode *first = root->first_child;
     TreeNode *second = first->next_brother;
     Type ret = NULL;
@@ -426,6 +433,7 @@ Type StructSpecifier(TreeNode *root)
 }
 void DefList_struct(TreeNode* root, FieldList head)
 {
+    // printf("DefList_struct\n");
     if(strcmp(root->type, "NULL")!=0)
     {
         TreeNode* first = root->first_child;
@@ -460,6 +468,7 @@ void DefList_struct(TreeNode* root, FieldList head)
 }
 FieldList Def_struct(TreeNode* root)
 {
+    // printf("Def_struct\n");
     TreeNode* first = root->first_child;
     TreeNode* second = first->next_brother;
     Type type = Specifier(first);
@@ -468,6 +477,7 @@ FieldList Def_struct(TreeNode* root)
 }
 FieldList DecList_struct(TreeNode* root, Type dectype)
 {
+    // printf("DecList_struct\n");
     TreeNode* first = root->first_child;
     TreeNode* second = first->next_brother;
     if(second==NULL)
@@ -484,6 +494,7 @@ FieldList DecList_struct(TreeNode* root, Type dectype)
 }
 FieldList Dec_struct(TreeNode* root, Type dectype)
 {
+    // printf("Dec_struct\n");
     FieldList ret = (FieldList)malloc(sizeof(struct FieldList_));
     TreeNode* vardec = root->first_child; 
     TreeNode* assignop = vardec->next_brother;
@@ -501,6 +512,7 @@ FieldList Dec_struct(TreeNode* root, Type dectype)
 // Declarators
 HashNode VarDec(TreeNode* root, Type dectype)
 {
+    // printf("VarDec\n");
     TreeNode* first = root->first_child;
     if(strcmp(first->type, "VarDec")==0) //数组
     {
@@ -529,6 +541,7 @@ HashNode VarDec(TreeNode* root, Type dectype)
 }
 HashNode FunDec(TreeNode* root, Type ret_type)
 {
+    // printf("FunDec\n");
     TreeNode* id = root->first_child;
     TreeNode* lp = id->next_brother;
     TreeNode* third = lp->next_brother;
@@ -564,6 +577,7 @@ HashNode FunDec(TreeNode* root, Type ret_type)
 }
 FieldList VarList(TreeNode* root)
 {
+    // printf("VarList\n");
     TreeNode* first = root->first_child;
     TreeNode* second = first->next_brother;
     if(second==NULL)
@@ -580,6 +594,7 @@ FieldList VarList(TreeNode* root)
 }
 FieldList ParamDec(TreeNode* root) //既要判断是否重名，又要负责加入符号表和返回FieldList
 {
+    // printf("ParamDec\n");
     TreeNode* first = root->first_child;
     TreeNode* second = first->next_brother;
     Type type = Specifier(first);
@@ -606,7 +621,7 @@ FieldList ParamDec(TreeNode* root) //既要判断是否重名，又要负责加�
         InterCode code1 = (InterCode)malloc(sizeof(struct InterCode_));
         Operand tmp_op = (Operand)malloc(sizeof(struct Operand_));
         tmp_op->kind = VAR;
-        strcpy(tmp_op->u.name, first->val);
+        strcpy(tmp_op->u.name, tmp->name);
         code1->kind = IR_PARAM;
         code1->u.singleOp.op = tmp_op;
         IR_append(code1);
@@ -616,6 +631,7 @@ FieldList ParamDec(TreeNode* root) //既要判断是否重名，又要负责加�
 // Statements
 void Compst(TreeNode* root, Type ret_type)
 {
+    // printf("Compst\n");
     TreeNode* lc = root->first_child;
     TreeNode* deflist = lc->next_brother;
     TreeNode* stmtlist = deflist->next_brother;
@@ -624,6 +640,7 @@ void Compst(TreeNode* root, Type ret_type)
 }
 void StmtList(TreeNode* root, Type ret_type)
 {
+    // printf("StmtList\n");
     if(strcmp(root->type, "NULL")!=0)
     {
         TreeNode* stmt = root->first_child;
@@ -634,6 +651,7 @@ void StmtList(TreeNode* root, Type ret_type)
 }
 void Stmt(TreeNode* root, Type ret_type)
 {
+    // printf("Stmt\n");
     TreeNode* first = root->first_child;
     if(strcmp(first->type, "Exp")==0)
     {
@@ -746,6 +764,7 @@ void Stmt(TreeNode* root, Type ret_type)
             Operand label1 = new_lable();
             Operand label2 = new_lable();
             translate_Cond(exp, label1, label2);
+            // printf("Cond_finish\n");
             InterCode ret0 = (InterCode)malloc(sizeof(struct InterCode_));
             ret0->kind = IR_LABEL;
             ret0->u.singleOp.op = label1;
@@ -813,6 +832,7 @@ void Stmt(TreeNode* root, Type ret_type)
 }
 void DefList_func(TreeNode* root)
 {
+    // printf("DefList_func\n");
     if(strcmp(root->type, "NULL")!=0)
     {
         TreeNode* def = root->first_child;
@@ -823,6 +843,7 @@ void DefList_func(TreeNode* root)
 }
 void Def_func(TreeNode* root)
 {
+    // printf("Def_func\n");
     TreeNode* specifier = root->first_child;
     TreeNode* declist = specifier->next_brother;
     Type tmp = Specifier(specifier);
@@ -830,6 +851,7 @@ void Def_func(TreeNode* root)
 }
 void DecList_func(TreeNode* root, Type dectype)
 {
+    // printf("DecList_func\n");
     TreeNode* dec = root->first_child;
     if(dec->next_brother==NULL)
     {
@@ -845,6 +867,7 @@ void DecList_func(TreeNode* root, Type dectype)
 }
 void Dec_func(TreeNode* root, Type dectype)
 {
+    // printf("Dec_func\n");
     TreeNode *vardec = root->first_child;
     HashNode var = VarDec(vardec, dectype);
     HashNode find_node = check(var->name);
@@ -877,11 +900,21 @@ void Dec_func(TreeNode* root, Type dectype)
         code1->u.dec.size = size;
         IR_append(code1);
     }
-    if(vardec->next_brother!=NULL) //中间代码的生成还没有处理
+    if(vardec->next_brother!=NULL)
     {
         TreeNode* assignop = vardec->next_brother;
         TreeNode* exp = assignop->next_brother;
         Type exp_type = Exp(exp);
+        Operand t1 = new_temp();
+        translate_Exp(exp, t1);
+        InterCode code1 = (InterCode)malloc(sizeof(struct InterCode_));
+        Operand temp_op = (Operand)malloc(sizeof(struct Operand_));
+        temp_op->kind = VAR;
+        strcpy(temp_op->u.name, var->name);
+        code1->kind = IR_ASSIGN;
+        code1->u.assign.left = temp_op;
+        code1->u.assign.right = t1;
+        IR_append(code1);
         if(type_cmp(var->val, exp_type)==false)
         {
             error_num++;
@@ -892,6 +925,7 @@ void Dec_func(TreeNode* root, Type dectype)
 // Expressions
 Type Exp(TreeNode* root)
 {
+    // printf("Exp\n");
     TreeNode* first = root->first_child;
     if(strcmp(first->type, "Exp")==0)
     {
@@ -1254,6 +1288,7 @@ Type Exp_Dot(TreeNode* root)
 }
 void translate_Exp(TreeNode* root, Operand place)
 {
+    // printf("translate_Exp\n");
     TreeNode* first = root->first_child;
     if(strcmp(first->type, "Exp")==0)
     {
@@ -1419,11 +1454,12 @@ void translate_Exp_Logic(TreeNode* root, Operand place)
 }
 void translate_Cond(TreeNode* root, Operand lable_true, Operand lable_false)
 {
+    // printf("translate_Cond\n");
     TreeNode* first = root->first_child;
     if(strcmp(first->type, "Exp")==0)
     {
         TreeNode* second = first->next_brother;
-        if(strcmp(second->type, "RELOP"))
+        if(strcmp(second->type, "RELOP")==0)
         {
             TreeNode* exp1 = first;
             TreeNode* exp2 = second->next_brother;
@@ -1443,7 +1479,7 @@ void translate_Cond(TreeNode* root, Operand lable_true, Operand lable_false)
             code4->u.singleOp.op = lable_false;
             IR_append(code4);
         }
-        else if(strcmp(second->type, "AND"))
+        else if(strcmp(second->type, "AND")==0)
         {
             TreeNode* exp1 = first;
             TreeNode* exp2 = second->next_brother;
@@ -1455,7 +1491,7 @@ void translate_Cond(TreeNode* root, Operand lable_true, Operand lable_false)
             IR_append(code2);
             translate_Cond(exp2, lable_true, lable_false);
         }
-        else if(strcmp(second->type, "OR"))
+        else if(strcmp(second->type, "OR")==0)
         {
             TreeNode* exp1 = first;
             TreeNode* exp2 = second->next_brother;
@@ -1511,6 +1547,7 @@ void translate_Cond(TreeNode* root, Operand lable_true, Operand lable_false)
         code4->u.singleOp.op = lable_false;
         IR_append(code4);
     }
+    // printf("Finish\n");
 }
 void translate_Exp_Func(TreeNode* root, Operand place)
 {
@@ -1565,7 +1602,8 @@ void translate_Exp_Func(TreeNode* root, Operand place)
             strcpy(temp_op->u.name, id->val);
             InterCode code1 = (InterCode)malloc(sizeof(struct InterCode_));
             code1->kind = IR_CALL;
-            code1->u.singleOp.op = temp_op;
+            code1->u.assign.left = place;
+            code1->u.assign.right = temp_op;
             IR_append(code1);
         }
     }
@@ -1628,10 +1666,15 @@ void translate_Exp_Struct(TreeNode* root, Operand place) // 结构体成员访�
     offset->kind = CONSTANT;
     offset->u.value = size;
     HashNode find_node = check(t1->u.name);
-    if (find_node!=NULL && find_node->flag == false) 
+    if (find_node==NULL) 
         t1->kind = VAR;
     else 
-        t1->kind = ADDR;
+    {
+        if(find_node->flag==true)
+            t1->kind = VAR;
+        else
+            t1->kind = ADDR;
+    }
 
     InterCode ret = (InterCode)malloc(sizeof(struct InterCode_));
     ret->kind = IR_ADD;

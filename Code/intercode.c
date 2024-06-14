@@ -2,9 +2,7 @@
 #include"tree.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <assert.h>
-#include <stdio.h>
 
 InterCode IR_head;
 InterCode IR_tail;
@@ -26,6 +24,7 @@ void IR_append(InterCode code)
         code->next = NULL;
         IR_tail = code;
     }
+    // print_test(code);
 }
 Operand new_temp()
 {
@@ -73,7 +72,7 @@ Operand new_lable()
     str[i] = '\0';
     i = i - 1;
     int j = 0;
-    strcpy(ret->u.name, "lable");
+    strcpy(ret->u.name, "label");
     while(j<i)
     {
         char c = str[j];
@@ -85,162 +84,468 @@ Operand new_lable()
     strcat(ret->u.name, str);
     return ret;
 }
-void printOperand(Operand op)
+void printOperand(Operand op, FILE* file)
 {
-    if(op->kind==CONSTANT)
+    if (file == NULL)
     {
-        printf("#%d", op->u.value);
-    }
-    else if(op->kind==ADDR)
-    {
-        printf("&%s", op->u.name);
-    }
-    else if(op->kind==MYSTAR)
-    {
-        printf("*%s", op->u.name);
+        if (op->kind == CONSTANT)
+        {
+            printf("#%d", op->u.value);
+        }
+        else if (op->kind == ADDR)
+        {
+            printf("&%s", op->u.name);
+        }
+        else if (op->kind == MYSTAR)
+        {
+            printf("*%s", op->u.name);
+        }
+        else
+            printf("%s", op->u.name);
     }
     else
-        printf("%s", op->u.name);
-}
-void printIR(InterCode head)
-{
-    while(head!=NULL)
     {
-        if(head->kind==IR_LABEL)
+        if (op->kind == CONSTANT)
         {
-            printf("LABLE ");
-            printOperand(head->u.singleOp.op);
-            printf(" :\n");
+            fprintf(file, "#%d", op->u.value);
         }
-        else if(head->kind==IR_FUNCTION)
+        else if (op->kind == ADDR)
         {
-            printf("FUNCTION ");
-            printOperand(head->u.singleOp.op);
-            printf(" :\n");
+            fprintf(file, "&%s", op->u.name);
         }
-        else if(head->kind==IR_ASSIGN)
+        else if (op->kind == MYSTAR)
         {
-            printOperand(head->u.assign.left);
-            printf(" := ");
-            printOperand(head->u.assign.right);
-            printf("\n");
+            fprintf(file, "*%s", op->u.name);
         }
-        else if(head->kind==IR_ADD)
+        else
+            fprintf(file, "%s", op->u.name);
+    }
+}
+void printIR(InterCode head, FILE* file)
+{
+    if(file == NULL)
+    {
+        while (head != NULL)
         {
-            printOperand(head->u.binOp.result);
-            printf(" := ");
-            printOperand(head->u.binOp.op1);
-            printf(" + ");
-            printOperand(head->u.binOp.op2);
-            printf("\n");
+            if (head->kind == IR_LABEL)
+            {
+                printf("LABEL ");
+                printOperand(head->u.singleOp.op, file);
+                printf(" :\n");
+            }
+            else if (head->kind == IR_FUNCTION)
+            {
+                printf("FUNCTION ");
+                printOperand(head->u.singleOp.op, file);
+                printf(" :\n");
+            }
+            else if (head->kind == IR_ASSIGN)
+            {
+                printOperand(head->u.assign.left, file);
+                printf(" := ");
+                printOperand(head->u.assign.right, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_ADD)
+            {
+                printOperand(head->u.binOp.result, file);
+                printf(" := ");
+                printOperand(head->u.binOp.op1, file);
+                printf(" + ");
+                printOperand(head->u.binOp.op2, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_SUB)
+            {
+                printOperand(head->u.binOp.result, file);
+                printf(" := ");
+                printOperand(head->u.binOp.op1, file);
+                printf(" - ");
+                printOperand(head->u.binOp.op2, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_MUL)
+            {
+                printOperand(head->u.binOp.result, file);
+                printf(" := ");
+                printOperand(head->u.binOp.op1, file);
+                printf(" * ");
+                printOperand(head->u.binOp.op2, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_DIV)
+            {
+                printOperand(head->u.binOp.result, file);
+                printf(" := ");
+                printOperand(head->u.binOp.op1, file);
+                printf(" / ");
+                printOperand(head->u.binOp.op2, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_GET_ADDR)
+            {
+                printOperand(head->u.assign.left, file);
+                printf(" := &");
+                printOperand(head->u.assign.right, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_READ_ADDR)
+            {
+                printOperand(head->u.assign.left, file);
+                printf(" := *");
+                printOperand(head->u.assign.right, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_WRITE_ADDR)
+            {
+                printf("*");
+                printOperand(head->u.assign.left, file);
+                printf(" := ");
+                printOperand(head->u.assign.right, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_GOTO)
+            {
+                printf("GOTO ");
+                printOperand(head->u.singleOp.op, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_IF_GOTO)
+            {
+                printf("IF ");
+                printOperand(head->u.ifgoto.x, file);
+                printf(" %s ", head->u.ifgoto.relop);
+                printOperand(head->u.ifgoto.y, file);
+                printf(" GOTO ");
+                printOperand(head->u.ifgoto.label, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_RETURN)
+            {
+                printf("RETURN ");
+                printOperand(head->u.singleOp.op, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_DEC)
+            {
+                printf("DEC ");
+                printOperand(head->u.dec.op, file);
+                printf(" %d\n", head->u.dec.size);
+            }
+            else if (head->kind == IR_ARG)
+            {
+                printf("ARG ");
+                printOperand(head->u.singleOp.op, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_CALL)
+            {
+                printOperand(head->u.assign.left, file);
+                printf(" := CALL ");
+                printOperand(head->u.assign.right, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_PARAM)
+            {
+                printf("PARAM ");
+                printOperand(head->u.singleOp.op, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_READ)
+            {
+                printf("READ ");
+                printOperand(head->u.singleOp.op, file);
+                printf("\n");
+            }
+            else if (head->kind == IR_WRITE)
+            {
+                printf("WRITE ");
+                printOperand(head->u.singleOp.op, file);
+                printf("\n");
+            }
+            head = head->next;
         }
-        else if(head->kind==IR_SUB)
+    }
+    else 
+    {
+        while (head != NULL)
         {
-            printOperand(head->u.binOp.result);
-            printf(" := ");
-            printOperand(head->u.binOp.op1);
-            printf(" - ");
-            printOperand(head->u.binOp.op2);
-            printf("\n");
+            if (head->kind == IR_LABEL)
+            {
+                fprintf(file, "LABEL ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, " :\n");
+            }
+            else if (head->kind == IR_FUNCTION)
+            {
+                fprintf(file, "FUNCTION ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, " :\n");
+            }
+            else if (head->kind == IR_ASSIGN)
+            {
+                printOperand(head->u.assign.left, file);
+                fprintf(file, " := ");
+                printOperand(head->u.assign.right, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_ADD)
+            {
+                printOperand(head->u.binOp.result, file);
+                fprintf(file, " := ");
+                printOperand(head->u.binOp.op1, file);
+                fprintf(file, " + ");
+                printOperand(head->u.binOp.op2, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_SUB)
+            {
+                printOperand(head->u.binOp.result, file);
+                fprintf(file, " := ");
+                printOperand(head->u.binOp.op1, file);
+                fprintf(file, " - ");
+                printOperand(head->u.binOp.op2, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_MUL)
+            {
+                printOperand(head->u.binOp.result, file);
+                fprintf(file, " := ");
+                printOperand(head->u.binOp.op1, file);
+                fprintf(file, " * ");
+                printOperand(head->u.binOp.op2, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_DIV)
+            {
+                printOperand(head->u.binOp.result, file);
+                fprintf(file, " := ");
+                printOperand(head->u.binOp.op1, file);
+                fprintf(file, " / ");
+                printOperand(head->u.binOp.op2, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_GET_ADDR)
+            {
+                printOperand(head->u.assign.left, file);
+                fprintf(file, " := &");
+                printOperand(head->u.assign.right, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_READ_ADDR)
+            {
+                printOperand(head->u.assign.left, file);
+                fprintf(file, " := *");
+                printOperand(head->u.assign.right, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_WRITE_ADDR)
+            {
+                fprintf(file, "*");
+                printOperand(head->u.assign.left, file);
+                fprintf(file, " := ");
+                printOperand(head->u.assign.right, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_GOTO)
+            {
+                fprintf(file, "GOTO ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_IF_GOTO)
+            {
+                fprintf(file, "IF ");
+                printOperand(head->u.ifgoto.x, file);
+                fprintf(file, " %s ", head->u.ifgoto.relop);
+                printOperand(head->u.ifgoto.y, file);
+                fprintf(file, " GOTO ");
+                printOperand(head->u.ifgoto.label, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_RETURN)
+            {
+                fprintf(file, "RETURN ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_DEC)
+            {
+                fprintf(file, "DEC ");
+                printOperand(head->u.dec.op, file);
+                fprintf(file, " %d\n", head->u.dec.size);
+            }
+            else if (head->kind == IR_ARG)
+            {
+                fprintf(file, "ARG ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_CALL)
+            {
+                printOperand(head->u.assign.left, file);
+                fprintf(file, " := CALL ");
+                printOperand(head->u.assign.right, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_PARAM)
+            {
+                fprintf(file, "PARAM ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_READ)
+            {
+                fprintf(file, "READ ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, "\n");
+            }
+            else if (head->kind == IR_WRITE)
+            {
+                fprintf(file, "WRITE ");
+                printOperand(head->u.singleOp.op, file);
+                fprintf(file, "\n");
+            }
+            head = head->next;
         }
-        else if(head->kind==IR_MUL)
-        {
-            printOperand(head->u.binOp.result);
-            printf(" := ");
-            printOperand(head->u.binOp.op1);
-            printf(" * ");
-            printOperand(head->u.binOp.op2);
-            printf("\n");
-        }
-        else if(head->kind==IR_DIV)
-        {
-            printOperand(head->u.binOp.result);
-            printf(" := ");
-            printOperand(head->u.binOp.op1);
-            printf(" / ");
-            printOperand(head->u.binOp.op2);
-            printf("\n");
-        }
-        else if(head->kind==IR_GET_ADDR)
-        {
-            printOperand(head->u.assign.left);
-            printf(" := &");
-            printOperand(head->u.assign.right);
-            printf("\n");
-        }
-        else if(head->kind==IR_READ_ADDR)
-        {
-            printOperand(head->u.assign.left);
-            printf(" := *");
-            printOperand(head->u.assign.right);
-            printf("\n");
-        }
-        else if(head->kind==IR_WRITE_ADDR)
-        {
-            printf("*");
-            printOperand(head->u.assign.left);
-            printf(" := ");
-            printOperand(head->u.assign.right);
-            printf("\n");
-        }
-        else if(head->kind==IR_GOTO)
-        {
-            printf("GOTO ");
-            printOperand(head->u.singleOp.op);
-            printf("\n");
-        }
-        else if(head->kind==IR_IF_GOTO)
-        {
-            printf("IF ");
-            printOperand(head->u.ifgoto.x);
-            printf(" %s ", head->u.ifgoto.relop);
-            printOperand(head->u.ifgoto.y);
-            printf(" GOTO ");
-            printOperand(head->u.ifgoto.label);
-            printf("\n");
-        }
-        else if(head->kind==IR_RETURN)
-        {
-            printf("RETURN ");
-            printOperand(head->u.singleOp.op);
-            printf("\n");
-        }
-        else if(head->kind==IR_DEC)
-        {
-            printf("DEC ");
-            printOperand(head->u.dec.op);
-            printf(" [%d]\n", head->u.dec.size);
-        }
-        else if(head->kind==IR_ARG)
-        {
-            printf("ARG ");
-            printOperand(head->u.singleOp.op);
-            printf("\n");
-        }
-        else if(head->kind==IR_CALL)
-        {
-            printOperand(head->u.assign.left);
-            printf(" := CALL ");
-            printOperand(head->u.assign.right);
-            printf("\n");
-        }
-        else if(head->kind==IR_PARAM)
-        {
-            printf("PARAM ");
-            printOperand(head->u.singleOp.op);
-            printf("\n");
-        }
-        else if(head->kind==IR_READ)
-        {
-            printf("READ ");
-            printOperand(head->u.singleOp.op);
-            printf("\n");
-        }
-        else if(head->kind==IR_WRITE)
-        {
-            printf("WRITE ");
-            printOperand(head->u.singleOp.op);
-            printf("\n");
-        }
+    }
+}
+void print_test(InterCode head, FILE* file)
+{
+    if (head->kind == IR_LABEL)
+    {
+        printf("LABLE ");
+        printOperand(head->u.singleOp.op, file);
+        printf(" :\n");
+    }
+    else if (head->kind == IR_FUNCTION)
+    {
+        printf("FUNCTION ");
+        printOperand(head->u.singleOp.op, file);
+        printf(" :\n");
+    }
+    else if (head->kind == IR_ASSIGN)
+    {
+        printOperand(head->u.assign.left, file);
+        printf(" := ");
+        printOperand(head->u.assign.right, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_ADD)
+    {
+        printOperand(head->u.binOp.result, file);
+        printf(" := ");
+        printOperand(head->u.binOp.op1, file);
+        printf(" + ");
+        printOperand(head->u.binOp.op2, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_SUB)
+    {
+        printOperand(head->u.binOp.result, file);
+        printf(" := ");
+        printOperand(head->u.binOp.op1, file);
+        printf(" - ");
+        printOperand(head->u.binOp.op2, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_MUL)
+    {
+        printOperand(head->u.binOp.result, file);
+        printf(" := ");
+        printOperand(head->u.binOp.op1, file);
+        printf(" * ");
+        printOperand(head->u.binOp.op2, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_DIV)
+    {
+        printOperand(head->u.binOp.result, file);
+        printf(" := ");
+        printOperand(head->u.binOp.op1, file);
+        printf(" / ");
+        printOperand(head->u.binOp.op2, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_GET_ADDR)
+    {
+        printOperand(head->u.assign.left, file);
+        printf(" := &");
+        printOperand(head->u.assign.right, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_READ_ADDR)
+    {
+        printOperand(head->u.assign.left, file);
+        printf(" := *");
+        printOperand(head->u.assign.right, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_WRITE_ADDR)
+    {
+        printf("*");
+        printOperand(head->u.assign.left, file);
+        printf(" := ");
+        printOperand(head->u.assign.right, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_GOTO)
+    {
+        printf("GOTO ");
+        printOperand(head->u.singleOp.op, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_IF_GOTO)
+    {
+        printf("IF ");
+        printOperand(head->u.ifgoto.x, file);
+        printf(" %s ", head->u.ifgoto.relop);
+        printOperand(head->u.ifgoto.y, file);
+        printf(" GOTO ");
+        printOperand(head->u.ifgoto.label, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_RETURN)
+    {
+        printf("RETURN ");
+        printOperand(head->u.singleOp.op, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_DEC)
+    {
+        printf("DEC ");
+        printOperand(head->u.dec.op, file);
+        printf(" %d\n", head->u.dec.size);
+    }
+    else if (head->kind == IR_ARG)
+    {
+        printf("ARG ");
+        printOperand(head->u.singleOp.op, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_CALL)
+    {
+        printOperand(head->u.assign.left, file);
+        printf(" := CALL ");
+        printOperand(head->u.assign.right, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_PARAM)
+    {
+        printf("PARAM ");
+        printOperand(head->u.singleOp.op, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_READ)
+    {
+        printf("READ ");
+        printOperand(head->u.singleOp.op, file);
+        printf("\n");
+    }
+    else if (head->kind == IR_WRITE)
+    {
+        printf("WRITE ");
+        printOperand(head->u.singleOp.op, file);
+        printf("\n");
     }
 }

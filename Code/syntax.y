@@ -4,6 +4,7 @@
     #include "tree.h"
     #include "semantics.h"
     #include "intercode.h"
+    #include "assembly.h"
     
     int yyerror(char* s);
     extern int has_error;
@@ -463,10 +464,16 @@ int main(int argc, char** argv)
     perror(argv[1]); 
     return 1; 
     } 
+    FILE* fw = fopen(argv[2], "w+");
+    if(!fw)
+    {
+        perror(argv[2]);
+        return 1;
+    }
     yyrestart(f); 
     yyparse(); 
     // if(has_error == 0)printTree(ROOT, 0);
-    
+    // printTree(ROOT, 0);
     Program(ROOT);
     while(func_head!=NULL)
     {
@@ -476,7 +483,7 @@ int main(int argc, char** argv)
     }
     if(error_num==0)
     {
-        printIR(IR_head);
+        trans_final(IR_head, fw);
     }
     return 0; 
 }
