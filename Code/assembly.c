@@ -231,6 +231,7 @@ void active_Analysis(InterCode func)
     bool flag = false;
     while(!flag) //迭代使其收敛
     {
+        flag = true;
         for(int i = 0;i<sum;i++)
         {
             struct BitVector_ temp_in = in[i];
@@ -247,8 +248,6 @@ void active_Analysis(InterCode func)
             }
             if(vec_cmp(&temp_in, &in[i])==false || vec_cmp(&temp_out, &out[i])==false)
                 flag = false;
-            else 
-                flag = true;
         }
     }
 }
@@ -320,7 +319,7 @@ void reg_free(int id)
     Regs[id].is_free = true;
     if(Regs[id].var!=NULL)
     {
-        fprintf(F, "sw %s, %d($fp)\n", Regs[id].name, Regs[id].var->offset);
+        // fprintf(F, "sw %s, %d($fp)\n", Regs[id].name, Regs[id].var->offset);
         Regs[id].var->in_reg = false;
         Regs[id].var = NULL;
     }
@@ -791,11 +790,12 @@ void trans_final(InterCode code, FILE* file)
             Operand op1 = now->u.assign.left;
             Operand op2 = now->u.assign.right;
             int reg_no = get_reg(op1);
-            fprintf(F,"move $v0, %s\n", Regs[reg_no].name);
-            fprintf(F,"jr $ra\n");
+            
             fprintf(F,"lw $ra, -4($fp)\n");
             fprintf(F,"move $sp, $fp\n");
             fprintf(F, "lw $fp, -8($fp)\n");
+            fprintf(F,"move $v0, %s\n", Regs[reg_no].name);
+            fprintf(F,"jr $ra\n");
         }
         else if(now->kind==IR_DEC) //无需做任何处理
         {
